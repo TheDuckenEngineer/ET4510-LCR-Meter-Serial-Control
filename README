@@ -1,0 +1,40 @@
+# Introduction
+A Python automation script analyzes and collects data using the East Tester ET4510 LCR Meter across a user-defined frequency range.
+This script supports user-guided manual switching of measurement parameters, real-time data collection and filtering, impedance visualization, and computation based on sample geometry (default: circular sample).
+
+# Features
+1. Creation of Logarithmic Frequency array: Automatically creation analysis range based on user-defined min/max frequency and total number of points.
+2. Manual Control of Major/Minor Parameters: The ET4510 does not support changing major/minor measurement parameters via SCPI commands while in REMOTE mode. Therefore, users must 
+                                             manually adjust them on the device panel when prompted, but automatically toggles the instrument between LOCAL and REMOTE mode to allow manual input when necessary.
+3. Repeat Measurement with Data Filtering: Measures each point 5 times at that frequency and filters outliers using ±2.0 standard deviations.
+4. Auto-adjusted Wait Time Based on Frequency: Delay time for data reading depending on the frequency to stabilize frequency generation.
+5. Safe Data Saving on Ctrl+C: Interrupting the script saves all collected data up to that point.
+6. Impedance Calculations and Automatic graph generation: Computes real (Z') and imaginary (Z'') parts of impedance using Rp and Cp.
+                                                          Converts Z' and Z'' into specific resistivity with unit of Ω·mm using user-provided thickness and diameter.
+7. Skip Any Major/Minor parameter measurment: Users can choose to skip specific Major or Minor measurements for their convenience.
+8. File Name Collision Handling: Warns user and requests new filename if a file with same name already exists.
+
+# Requirements
+1. Python 3.7+
+2. PySerial
+3. NumPy
+4. Matplotlib
+
+# Notes and Warnings
+1. Ensure the ET4510 device is connected to the correct COM port (default: COM4).
+2. Create a folder named Data/ in the same directory to store outputs.
+3. Manual switching of Major and Minor parameters is mandatory.
+4. Always wait for the prompt to set parameters before pressing Enter. In this step, users can choose to skip specific Major or Minor measurements for their convenience.
+5. Do not disconnect the device while the script is running.
+
+# Follow the prompts in the terminal. For each measurement cycle:
+1. Enter the frequency range and number of points.
+2. Enter the filename.
+3. Input the sample geometry.
+4. Enter a fixed Minor parameter.
+5. Follow instructions to manually configure Major/Minor on device.
+6. Optionally skip any parameter.
+7. View live output and final plot.
+
+# How to Stop Safely
+Press Ctrl+C during execution. Script will save all collected data at that point and exit cleanly.

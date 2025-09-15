@@ -1,0 +1,22 @@
+# placing ? at the end of any function will return its programed value
+
+# set bais voltage in mV
+:VOLT ___
+
+# set bias voltage in mV
+:BIAS:VOLT ___
+
+# set frequencies in Hz
+:FREQ ___
+
+# set the major function parameter. this is resistance, capacitance, inductance, impedance, or capacitor value
+:FUNC:IMP:A [AUTO, R, C, L, Z, ECAP]
+
+# set the minor function parameter. this is x, d, q, phase, and ESR
+:FUNC:IMP:B [X, D, Q, THR, ESR] 
+
+# set the list for measurements
+:LIST: num, freq, low, high 
+
+# set the list that you want to measure
+:LIST:MODE [STEP, SEQ]
