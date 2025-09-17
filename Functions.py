@@ -121,13 +121,3 @@ def Experiment(ser, freqencies, mainMeasurement, minorMeasurement, voltage, bias
     print(df)
     print('Test completed ✅\n\n')
     return df
-
-def DataExport(params, Data, info):
-    fileName = f'{params}'
-    if os.path.isfile(fileName) == 0:
-        np.savetxt(f"Data/{fileName}.csv", Data, header = 'Position (mm), Strain (mm/mm), Temperature (C), Stress Time (s), Stress (Pa), Volt Time (s), Voltage (V)', delimiter = ",",
-                   fmt = "%f", comments = f'{info}\n\n')
-    elif os.path.isfile(fileName) == 1:
-        os.remove(fileName)
-        np.savetxt(f"Data/{fileName}.csv", Data, header = 'Position (mm), Strain (mm/mm), Temperature (C), Stress Time (s), Stress (Pa), Volt Time (s), Voltage (V)', delimiter = ",",
-                   fmt = "%f", comments = f'{info}\n\n')
