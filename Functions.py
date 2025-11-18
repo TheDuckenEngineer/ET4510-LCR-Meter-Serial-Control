@@ -6,9 +6,11 @@ def DeviceConnect(COMPort):
     ser = serial.Serial(COMPort, 9600, timeout = 1)
     return ser
 
+
 # disconnect the LCR meter 
 def DeviceDisconnect(ser):
     return ser.close()
+
 
 # send commands to the LCR meter and wait for response
 def LCRDataReadout(ser):
@@ -23,8 +25,8 @@ def LCRDataReadout(ser):
         readout.append(ser.readline().decode().strip())
         if len(readout) == 2:
             break
-        
     return readout[1]
+
 
 # define function to send commands to the LCR meter and wait for a response.
 def LCRCommander(ser, command):
@@ -37,33 +39,33 @@ def LCRCommander(ser, command):
         if ser.readline().decode().strip() == 'exec success':
             break
 
+
 # define the frequency range and the number of points evenly spaced
 def Frequencies(minFreq, maxFreq, numberOfpoints):
     frequencies = np.logspace(np.log10(minFreq), np.log10(maxFreq), num = numberOfpoints)
     return np.round(frequencies).astype(int)
 
+
 # collect the average data values with standard deviations
 def DataAveraging(ser):
     # preallocate data storage array
-    data = np.array([0,2])
+    data = np.zeros([0, 2])
 
-    # take 10 measurements
-    for i in range(0,10):
-        data = np.vstack([data, np.float16(LCRDataReadout(ser).split(','))])
+    # take 20 measurements
+    for i in range(0, 20):
+        data = np.vstack([data, np.array(LCRDataReadout(ser).split(','), dtype = float)])
     
-    # remove the first element which was used to preallocatte the array
-    data = np.delete(data, 0, axis = 0)
-
     # determine the data statistics.
     data = np.array([np.mean(data[::,0]), np.std(data[::,0]), np.mean(data[::,1]), np.std(data[::,1])])
     return data
+
 
 # create a stablity timer based on frequency
 def TimeAdjustments(freq):
     if freq < 100:
         time.sleep(10)
     elif freq <= 1000:
-        time.sleep(2)
+        time.sleep(3)
 
     
 # actual experiment
@@ -101,7 +103,7 @@ def Experiment(ser, freqencies, mainMeasurement, minorMeasurement, voltage, bias
                 # apply some time to allow the measurement to stablize
                 TimeAdjustments(j)
 
-                # record a 10 value average
+                # record a 20 value average
                 measurements = DataAveraging(ser)
 
                 # store the values in the lists. each entry is for the corresponding frequency
@@ -121,3 +123,25 @@ def Experiment(ser, freqencies, mainMeasurement, minorMeasurement, voltage, bias
     print(df)
     print('Test completed ✅\n\n')
     return df
+
+
+# data export
+def DataExport(params, Data, info):
+    fileName = f'{params}'
+    
+    # if file name doesn't exist, save it.
+    if os.path.isfile(fileName) == 0:
+        np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+                   fmt = "%e", comments = f'{info}\n\n')
+        
+    # if file name already exists, check name before saving
+    elif os.path.isfile(fileName) == 1:
+        check = input('Is name correct? (y/n)')
+        if check == 'y':
+            os.remove(fileName)
+            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+                        fmt = "%e", comments = f'{info}\n\n')
+        if check == 'n':
+            fileName = input('Input material i.e. P8 PVC or Mineral Oil')
+            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+                        fmt = "%e", comments = f'{info}\n\n')
