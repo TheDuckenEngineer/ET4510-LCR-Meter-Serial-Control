@@ -65,7 +65,7 @@ def TimeAdjustments(freq):
     if freq < 100:
         time.sleep(10)
     elif freq <= 1000:
-        time.sleep(3)
+        time.sleep(5)
 
     
 # actual experiment
@@ -131,7 +131,7 @@ def DataExport(params, Data, info):
     
     # if file name doesn't exist, save it.
     if os.path.isfile(fileName) == 0:
-        np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+        np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Impedance (Ohm), Phase Angle (deg)', delimiter = ",",
                    fmt = "%e", comments = f'{info}\n\n')
         
     # if file name already exists, check name before saving
@@ -139,9 +139,9 @@ def DataExport(params, Data, info):
         check = input('Is name correct? (y/n)')
         if check == 'y':
             os.remove(fileName)
-            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Impedance (Ohm), Phase Angle (deg)', delimiter = ",",
                         fmt = "%e", comments = f'{info}\n\n')
         if check == 'n':
             fileName = input('Input material i.e. P8 PVC or Mineral Oil')
-            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Capacitance (F), Dissipation Factor', delimiter = ",",
+            np.savetxt(f"Data/{fileName}.csv", Data, header = 'Freqency (Hz), Impedance (Ohm), Phase Angle (deg)', delimiter = ",",
                         fmt = "%e", comments = f'{info}\n\n')
